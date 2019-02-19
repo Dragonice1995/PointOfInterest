@@ -79,6 +79,20 @@ class Poi
     }
 
     /**
+     * Set idPoi.
+     *
+     * @param int $id
+     *
+     * @return Poi
+     */
+    public function setIdPoi($id)
+    {
+        $this->idPoi = $id;
+
+        return $this;
+    }
+
+    /**
      * Set name.
      *
      * @param string $name

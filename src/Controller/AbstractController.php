@@ -25,6 +25,14 @@ abstract class AbstractController
         );
     }
 
+    protected function createNotFoundResponse()
+    {
+        return new JsonResponse(
+            ['error' => 'Resource not found!'],
+          Response::HTTP_NOT_FOUND
+        );
+    }
+
     protected function objectsToJson($object)
     {
         return $this->serializer->serialize($object, 'json');

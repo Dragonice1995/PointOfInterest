@@ -40,6 +40,20 @@ class City
     }
 
     /**
+     * Set idCity.
+     *
+     * @param int $id
+     *
+     * @return City
+     */
+    public function setIdCity($id)
+    {
+        $this->idCity = $id;
+
+        return $this;
+    }
+
+    /**
      * Set name.
      *
      * @param string $name

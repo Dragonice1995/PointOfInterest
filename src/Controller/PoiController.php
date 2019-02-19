@@ -22,6 +22,14 @@ class PoiController extends AbstractController
         if (in_array(null, $dataPoi)) {
             return $this->createErrorResponse("Не все значения переданы для создания!");
         }
+        if (!(is_float($dataPoi['latitude']) && is_float($dataPoi['longitude']))) {
+            return new JsonResponse(
+                [
+                    'error' => 'Latitude or longitude not float!'
+                ],
+                Response::HTTP_BAD_REQUEST
+            );
+        }
 
         try {
             $newPoi = $this->poiService->createPoint($dataPoi);
@@ -35,6 +43,7 @@ class PoiController extends AbstractController
             ],
             Response::HTTP_CREATED
         );
+
     }
 
     public function updatePoint(Request $request)
@@ -49,16 +58,31 @@ class PoiController extends AbstractController
             "longitude" => $request->get('longitude'),
             "idCity" => $request->get('idCity')
         );
-        
+
+        if (($dataPoi['latitude'] !== null || $dataPoi['longitude'] !== null) &&
+            !(is_float($dataPoi['latitude']) && is_float($dataPoi['longitude']))) {
+            return new JsonResponse(
+                [
+                    'error' => 'Latitude or longitude not float!'
+                ],
+                Response::HTTP_BAD_REQUEST
+            );
+        }
+
         try {
             $newPoi = $this->poiService->updatePoint($id, $dataPoi);
         } catch (\Exception $e) {
             return $this->createErrorResponse($e->getMessage());
         }
 
-        $response = new Response($this->objectsToJson($newPoi));
-        $response->headers->set('Content-Type', 'application/json');
-        return $response;
+        if ($newPoi !== null) {
+            $response = new Response($this->objectsToJson($newPoi));
+            $response->headers->set('Content-Type', 'application/json');
+            return $response;
+        } else {
+            return $this->createNotFoundResponse();
+        }
+
     }
 
     public function getClosestPoints(Request $request)
@@ -81,9 +105,13 @@ class PoiController extends AbstractController
             return $this->createErrorResponse($e->getMessage());
         }
 
-        $response = new Response($this->objectsToJson($closestPoints));
-        $response->headers->set('Content-Type', 'application/json');
-        return $response;
+        if ($closestPoints !== null) {
+            $response = new Response($this->objectsToJson($closestPoints));
+            $response->headers->set('Content-Type', 'application/json');
+            return $response;
+        } else {
+            return $this->createNotFoundResponse();
+        }
     }
 
     public function getAllCityPoints(Request $request)
@@ -107,8 +135,12 @@ class PoiController extends AbstractController
             return $this->createErrorResponse($e->getMessage());
         }
 
-        $response = new Response($this->objectsToJson($cityPoints));
-        $response->headers->set('Content-Type', 'application/json');
-        return $response;
+        if ($cityPoints !== null) {
+            $response = new Response($this->objectsToJson($cityPoints));
+            $response->headers->set('Content-Type', 'application/json');
+            return $response;
+        } else {
+            return $this->createNotFoundResponse();
+        }
     }
 }

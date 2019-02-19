@@ -92,6 +92,7 @@ class Geoplugin
         $this->city = $data['geoplugin_city'];
         $this->latitude = $data['geoplugin_latitude'];
         $this->longitude = $data['geoplugin_longitude'];
+        return $this;
     }
 
 

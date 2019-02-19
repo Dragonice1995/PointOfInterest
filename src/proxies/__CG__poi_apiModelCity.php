@@ -191,6 +191,17 @@ class City extends \poi_api\Model\City implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
+    public function setIdCity($id)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setIdCity', [$id]);
+
+        return parent::setIdCity($id);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function setName($name)
     {
 

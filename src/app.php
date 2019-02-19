@@ -2,6 +2,8 @@
 
 use Dflydev\Provider\DoctrineOrm\DoctrineOrmServiceProvider;
 use poi_api\Controller\PoiController;
+use poi_api\Model\Geoplugin;
+use poi_api\Repository\CityRepository;
 use poi_api\Repository\PoiRepository;
 use poi_api\Service\PoiService;
 use Silex\Provider\DoctrineServiceProvider;
@@ -50,10 +52,16 @@ $app['poi.controller'] = function ($app) {
     return new PoiController($app['poi.service'], $app['serializer']);
 };
 $app['poi.service'] = function ($app) {
-    return new PoiService($app['poi.repository']);
+    return new PoiService($app['poi.repository'], $app['city.repository'], $app['geo.repository']);
 };
 $app['poi.repository'] = function ($app) {
     return new PoiRepository($app['orm.em']);
+};
+$app['city.repository'] = function ($app) {
+    return new CityRepository($app['orm.em']);
+};
+$app['geo.repository'] = function ($app) {
+    return new Geoplugin();
 };
 
 
