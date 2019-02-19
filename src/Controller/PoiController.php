@@ -11,17 +11,23 @@ class PoiController extends AbstractController
 {
     public function createPoint(Request $request)
     {
-        // TODO: исключительные ситуации
-
         $dataPoi = array(
             "name" => $request->get('name'),
             "description" => $request->get('description'),
             "type" => $request->get('type'),
             "latitude" => $request->get('latitude'),
-            "longitude" => $request->get('longitude')
+            "longitude" => $request->get('longitude'),
+            "idCity" => $request->get('idCity')
         );
+        if (in_array(null, $dataPoi)) {
+            return $this->createErrorResponse("Не все значения переданы для создания!");
+        }
 
-        $newPoi = $this->poiService->createPoint($dataPoi);
+        try {
+            $newPoi = $this->poiService->createPoint($dataPoi);
+        } catch (\Exception $e) {
+            return $this->createErrorResponse($e->getMessage());
+        }
 
         return new JsonResponse(
             [
@@ -31,10 +37,32 @@ class PoiController extends AbstractController
         );
     }
 
+    public function updatePoint(Request $request)
+    {
+        $id = $request->get('id');
+
+        $dataPoi = array(
+            "name" => $request->get('name'),
+            "description" => $request->get('description'),
+            "type" => $request->get('type'),
+            "latitude" => $request->get('latitude'),
+            "longitude" => $request->get('longitude'),
+            "idCity" => $request->get('idCity')
+        );
+        
+        try {
+            $newPoi = $this->poiService->updatePoint($id, $dataPoi);
+        } catch (\Exception $e) {
+            return $this->createErrorResponse($e->getMessage());
+        }
+
+        $response = new Response($this->objectsToJson($newPoi));
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
+    }
+
     public function getClosestPoints(Request $request)
     {
-        // TODO: исключительные ситуации
-
         $ip = $request->query->get('ip');
         if ($ip === null) {
             $ip = $request->getClientIp();
@@ -43,10 +71,15 @@ class PoiController extends AbstractController
         if ($radius === null) {
             $radius = 1;
         }
-        $closestPoints = $this->poiService->getClosestPoints(
-            $ip,
-            $radius
-        );
+
+        try {
+            $closestPoints = $this->poiService->getClosestPoints(
+                $ip,
+                $radius
+            );
+        } catch (\Exception $e) {
+            return $this->createErrorResponse($e->getMessage());
+        }
 
         $response = new Response($this->objectsToJson($closestPoints));
         $response->headers->set('Content-Type', 'application/json');
@@ -55,11 +88,25 @@ class PoiController extends AbstractController
 
     public function getAllCityPoints(Request $request)
     {
-        // TODO: по умолчанию значения
         $city = $request->query->get("city");
+        if ($city === null) {
+            $city = $this->poiService->getCityByIp($request->getClientIp());
+        }
         $limit = $request->query->get("limit");
+        if ($limit === null) {
+            $limit = 50;
+        }
         $offset = $request->query->get("offset");
-        $cityPoints = $this->poiService->getAllCityPoints($city, $limit, $offset);
+        if ($offset === null) {
+            $offset = 0;
+        }
+
+        try {
+            $cityPoints = $this->poiService->getAllCityPoints($city, $limit, $offset);
+        } catch (\Exception $e) {
+            return $this->createErrorResponse($e->getMessage());
+        }
+
         $response = new Response($this->objectsToJson($cityPoints));
         $response->headers->set('Content-Type', 'application/json');
         return $response;

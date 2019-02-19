@@ -60,6 +60,7 @@ $app['poi.repository'] = function ($app) {
 // routes
 $route = $app['controllers_factory'];
 $route->post('/poi', 'poi.controller:createPoint');
+$route->put('/poi/{id}', 'poi.controller:updatePoint');
 $route->get('/poi', 'poi.controller:getClosestPoints');
 $route->get('/poi/city', 'poi.controller:getAllCityPoints');
 $app->mount('/', $route);

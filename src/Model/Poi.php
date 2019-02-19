@@ -2,6 +2,7 @@
 namespace poi_api\Model;
 
 
+use poi_api\Model\City;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -57,7 +58,7 @@ class Poi
     private $longitude;
 
     /**
-     * @var \City
+     * @var City
      *
      * @ORM\ManyToOne(targetEntity="City")
      * @ORM\JoinColumns({
@@ -200,11 +201,11 @@ class Poi
     /**
      * Set idCity.
      *
-     * @param \City|null $idCity
+     * @param City|null $idCity
      *
      * @return Poi
      */
-    public function setIdCity(\City $idCity = null)
+    public function setIdCity(City $idCity = null)
     {
         $this->idCity = $idCity;
 
@@ -214,7 +215,7 @@ class Poi
     /**
      * Get idCity.
      *
-     * @return \City|null
+     * @return City|null
      */
     public function getIdCity()
     {

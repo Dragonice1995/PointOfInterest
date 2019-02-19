@@ -49,7 +49,14 @@ class PoiRepository extends AbstractRepository
     public function getPointById($id)
     {
         $repository = $this->entity_manager->getRepository('poi_api\Model\Poi');
-        $point = $repository->findBy(array("idPoi" => $id));
+        $point = $repository->findOneBy(array("idPoi" => $id));
         return $point;
+    }
+
+    public function getCityById($id)
+    {
+        $repository = $this->entity_manager->getRepository('poi_api\Model\City');
+        $city = $repository->findOneBy(array("idCity" => $id));
+        return $city;
     }
 }
